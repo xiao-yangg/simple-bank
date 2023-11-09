@@ -42,8 +42,14 @@ jobs:
     - name: Install golang-migrate
       run: |
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
-        sudo mv migrate.linux-amd64/usr/bin/migrate /usr/bin/migrate
-        which migrate
+    
+    - name: Check if the migrate file exists
+      run: |
+        if find / -name "migrate.linux-amd64/usr/bin/migrate"; then
+          echo "The migrate file exists."
+        else
+          echo "The migrate file does not exist."
+        fi
 
     - name: Run migrations
       run: make migrateup
