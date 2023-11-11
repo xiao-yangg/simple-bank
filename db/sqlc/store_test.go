@@ -25,10 +25,12 @@ func TestTransferTx(t *testing.T) {
 	results := make(chan TransferTxResult)
 
 	for i := 0; i < int(n); i++ {
-		txName := fmt.Sprintf("tx %d - ", i)
+		// txName := fmt.Sprintf("tx %d - ", i)
+		
 		// concurrent Go routine
 		go func() {
-			ctx := context.WithValue(context.Background(), txKey, txName) // modified context
+			// ctx := context.WithValue(context.Background(), txKey, txName) // modified context
+			ctx := context.Background()
 			result, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: account1.ID,
 				ToAccountID: account2.ID,
@@ -136,7 +138,7 @@ func TestTransferTx2(t *testing.T) {
 	errs := make(chan error)
 
 	for i := 0; i < n; i++ {
-		txName := fmt.Sprintf("tx %d - ", i)
+		// txName := fmt.Sprintf("tx %d - ", i)
 
 		fromAccountID := account1.ID
 		toAccountID := account2.ID
@@ -148,7 +150,8 @@ func TestTransferTx2(t *testing.T) {
 
 		// concurrent Go routine
 		go func() {
-			ctx := context.WithValue(context.Background(), txKey, txName) // modified context
+			// ctx := context.WithValue(context.Background(), txKey, txName) // modified context
+			ctx := context.Background()
 			_, err := store.TransferTx(ctx, TransferTxParams{
 				FromAccountID: fromAccountID,
 				ToAccountID: toAccountID,
