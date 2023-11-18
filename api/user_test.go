@@ -12,7 +12,7 @@ import (
 	"reflect"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/lib/pq"
+	"github.com/lib/pq"
 	"github.com/stretchr/testify/require"
 	mockdb "github.com/xiao-yangg/simplebank/db/mock"
 	db "github.com/xiao-yangg/simplebank/db/sqlc"
