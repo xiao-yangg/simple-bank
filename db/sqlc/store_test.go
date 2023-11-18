@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/xiao-yangg/simplebank/db/util"
+	"github.com/xiao-yangg/simplebank/util"
 )
 
 func TestTransferTx(t *testing.T) {

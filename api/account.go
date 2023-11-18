@@ -2,16 +2,16 @@ package api
 
 import (
 	"database/sql"
-	"log"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	db "github.com/xiao-yangg/simplebank/db/sqlc"
+	"github.com/xiao-yangg/simplebank/token"
 )
 
 type createAccountRequest struct {
-	OwnerName string `json:"owner_name" binding:"required"`
 	Currency string `json:"currency" binding:"required,currency"` // oneof - parameter validation: https://pkg.go.dev/github.com/go-playground/validator/v10#section-readme
 }
 
@@ -22,8 +22,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.CreateAccountParams{
-		OwnerName: req.OwnerName,
+		OwnerName: authPayload.Username,
 		Currency: req.Currency,
 		Balance: 0,
 	}
@@ -69,6 +70,13 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		}
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if account.OwnerName != authPayload.Username {
+		err := errors.New("account doesn't belong to authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	ctx.JSON(http.StatusOK, account)
 }
 
@@ -84,10 +92,13 @@ func (server *Server) listAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.ListAccountsParams {
+		OwnerName: authPayload.Username,
 		Limit: req.PageID,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
+	
 	accounts, err := server.store.ListAccounts(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

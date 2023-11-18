@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	_ "github.com/lib/pq" // communicate w db
-	"github.com/xiao-yangg/simplebank/db/util"
+	"github.com/xiao-yangg/simplebank/util"
 )
 
 // NOTE: '_' before package name to keep without calling

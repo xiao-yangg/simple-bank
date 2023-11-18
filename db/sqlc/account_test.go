@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	"github.com/xiao-yangg/simplebank/db/util"
+	"github.com/xiao-yangg/simplebank/util"
 )
 
 func createRandomAccount(t *testing.T) Account {
@@ -87,20 +87,23 @@ func TestDeleteAccount(t *testing.T) {
 }
 
 func TestListAccounts(t *testing.T) {
+	var lastAccount Account
 	for i := 0; i < 10; i++ {
-		createRandomAccount(t)
+		lastAccount = createRandomAccount(t)
 	}
 
 	arg := ListAccountsParams {
+		OwnerName: lastAccount.OwnerName,
 		Limit: 5,
-		Offset: 5,
+		Offset: 0,
 	}
 
 	accounts, err := testQueries.ListAccounts(context.Background(), arg)
 	require.NoError(t, err)
-	require.Len(t, accounts, int(arg.Limit))
+	require.NotEmpty(t, accounts)
 
 	for _, account := range accounts {
 		require.NotEmpty(t, account)
+		require.Equal(t, lastAccount.OwnerName, account.OwnerName)
 	}
 }

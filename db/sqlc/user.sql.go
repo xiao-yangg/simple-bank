@@ -41,8 +41,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUser = `-- name: GetUser :one
-SELECT username, hashed_password, full_name, email, password_changed_at, created_at
-FROM users
+SELECT username, hashed_password, full_name, email, password_changed_at, created_at FROM users
 WHERE username = $1 LIMIT 1`
 
 func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
