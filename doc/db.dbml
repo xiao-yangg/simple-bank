@@ -1,0 +1,68 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+Project simple_bank {
+    database_type: "PostgreSQL"
+    Note: '''
+        # Simple Bank Database
+    '''
+}
+
+Table users as U {
+    username varchar [pk]
+    hashed_password varchar [not null]
+    full_name varchar [not null]
+    email varchar [unique, not null]
+    password_change_at timestamptz [not null, default: '0001-01-01 00:00:00+00']
+    created_at timestamptz [not null, default: `now()`]
+}
+
+Table accounts as A {
+    // bigserial: 64-bit auto-incrementing integer
+    // pk - primary key
+    id bigserial [pk, unique]
+    owner_name varchar [ref: > U.username, not null]
+    balance bigint [not null]
+    currency varchar [not null]
+    created_at timestamptz [not null, default: `now()`] // add 'tz' to include timezone
+
+    Indexes {
+        owner_name
+        (owner_name, currency) [unique] // composite index: user can have diff accs BUT 1 acc of 1 currency
+    }
+}
+
+Table entries {
+    id bigserial [pk, unique]
+    account_id bigint [ref: > A.id] // foreign key - reference id column of account table (many-to-one)
+    amount bigint [not null, note: 'can be +ve/-ve'] // add note
+    created_at timestamptz [not null, default: `now()`]
+
+    Indexes {
+        account_id
+    }
+}
+
+Table transfers {
+    id bigserial [pk, unique]
+    from_account_id bigint [ref: > A.id]
+    to_account_id bigint [ref: > A.id]
+    amount bigint [not null, note: 'must be +ve']
+    created_at timestamptz [not null, default: `now()`]
+
+    Indexes {
+        from_account_id
+        to_account_id
+        (from_account_id, to_account_id)
+    }
+}
+
+Table sessions {
+    id uuid [pk]
+    username varchar [ref: > U.username, not null]
+    refresh_token varchar [not null]
+    user_agent varchar [not null]
+    client_ip varchar [not null]
+    is_blocked boolean [not null, default: false]
+    expires_at timestamptz [not null]
+    created_at timestamptz [not null, default: `now()`]
+}
