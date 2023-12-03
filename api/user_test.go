@@ -60,7 +60,7 @@ func TestCreateUserAPI(t *testing.T) {
 		checkResponse func(recorder *httptest.ResponseRecorder)
 	}{
 		{
-			name: "OK", // bug
+			name: "OK",
 			body: gin.H {
 				"username":  user.Username,
 				"password":  password,
@@ -85,7 +85,7 @@ func TestCreateUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "InternalError", // bug
+			name: "InternalError",
 			body: gin.H {
 				"username":  user.Username,
 				"password":  password,
@@ -103,7 +103,7 @@ func TestCreateUserAPI(t *testing.T) {
 			},
 		},
 		{
-			name: "DuplicateUsername", // bug
+			name: "DuplicateUsername",
 			body: gin.H{
 				"username":  user.Username,
 				"password":  password,

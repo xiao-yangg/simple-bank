@@ -76,6 +76,7 @@ type UpdateUserParams struct {
 	PasswordChangedAt sql.NullTime `json:"password_changed_at"`
 	FullName sql.NullString `json:"full_name"`
 	Email sql.NullString `json:"email"`
+	IsEmailVerified sql.NullBool `json:"is_user_verified"`
 	Username string `json:"username"`
 }
 
