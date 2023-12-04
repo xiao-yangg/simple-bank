@@ -17,11 +17,12 @@ var (
 // Payload contains payload data of token
 type Payload struct {
 	Username string `json:"username"`
+	Role string `json:"role"`
 	jwt.RegisteredClaims `json:"payload"` // simplify if using PASETO only
 }
 
 // NewPayload creates a new token payload with a specific username and duration
-func NewPayload(username string, duration time.Duration) (*Payload, error) {
+func NewPayload(username string, role string, duration time.Duration) (*Payload, error) {
 	tokenID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -30,6 +31,7 @@ func NewPayload(username string, duration time.Duration) (*Payload, error) {
 	payload := &Payload{}
 	payload.ID = tokenID.String()
 	payload.Username = username
+	payload.Role = role
 	payload.IssuedAt = jwt.NewNumericDate(time.Now())
 	payload.ExpiresAt = jwt.NewNumericDate(time.Now().Add(duration))
 	return payload, nil
