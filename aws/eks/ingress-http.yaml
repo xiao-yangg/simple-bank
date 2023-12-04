@@ -1,21 +1,14 @@
 apiVersion: networking.k8s.io/v1
-kind: IngressClass
-metadata:
-  name: nginx
-spec:
-  controller: k8s.io/ingress-nginx
----
-apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: simple-bank-ingress
+  name: simple-bank-ingress-http
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
   ingressClassName: nginx
   rules:
-  - host: "example.example.com"
+  - host: "api.example.com"
     http:
       paths:
       - pathType: Prefix
@@ -27,5 +20,5 @@ spec:
               number: 80
   tls:
   - hosts:
-    - example.example.com
+    - api.example.com
     secretName: simple-bank-api-cert
